@@ -1,0 +1,25 @@
+{
+  "name": "tasktracker",
+  "version": "1.0.0",
+  "description": "Build a CLI app to track your tasks and manage your to-do list.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lamloi1109/TaskTracker.git"
+  },
+  "keywords": [
+    "Task",
+    "CLI",
+    "Tracker"
+  ],
+  "author": "lamloi1109",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lamloi1109/TaskTracker/issues"
+  },
+  "homepage": "https://github.com/lamloi1109/TaskTracker#readme",
+  "type":"module" 
+}
