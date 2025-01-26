@@ -1,8 +1,8 @@
-function task( idTask, desTask, statusTask) {
+export function task( idTask, desTask, statusTask) {
     let id = idTask ?? 0;
     let description = desTask ?? "";
     let status = statusTask ?? "todo";
-    let createdAt =  Date.now().toString("yyyy/MM/dd");
+    let createdAt = getCurrentTime();
     let updatedAt = "";
     return {
         getId: function(){
@@ -43,7 +43,25 @@ function task( idTask, desTask, statusTask) {
         setUpdatedAt: function(value) {
             updatedAt = value;
         },
+        getInstance: function() {
+            return {
+                id: id,
+                description: description,
+                status: status,
+                createdAt: createdAt,
+                updatedAt: updatedAt
+            }
+        }
     }
 }
 
-export default task;
+function getCurrentTime() {
+    const timeElapsed = Date.now();
+    const today = new Date(timeElapsed);
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+    const currentDay = today.getDate();
+    const currentHour = today.getHours();
+    const currentMinute = today.getMinutes();
+    return `${currentYear}/${currentMonth}/${currentDay} ${currentHour}:${currentMinute}`;
+}
