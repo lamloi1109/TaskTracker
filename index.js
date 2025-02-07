@@ -4,6 +4,8 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path'
 import {task} from './task.js';
 import * as fs from 'fs';
+import { type } from 'os';
+import { Console } from 'console';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -90,6 +92,15 @@ let taskList = [];
             } 
             addTask( description );
         }    
+
+        if(command === 'update') {
+            const taskId = args[1]
+            const newDescriptiion = args[2]
+            updateTask(taskId, newDescriptiion)
+        }
+
+
+
     } catch (error) {
         console.log(error);
     }
@@ -155,6 +166,50 @@ function isJSONParsable(json) {
 }
 
 // - updateTask
+
+function updateTask(taskId, newDescription) {
+    try{
+        // Kiểm tra đầu vào
+        // Kiểm tra task iđ có phải là số không
+        // Kiểm tra đescription có phải là chuỗi không
+        if (!Number.isInteger(Number.parseInt(taskId))) {
+            console.log(`❌ Error: taskId must be an integer, but received ${taskId} (${typeof taskId}).`);
+            return
+        }
+
+        if (typeof newDescription !== 'string') {
+            console.log(`❌ Error: newDescription must be a string, but received ${newDescription} (${typeof newDescription}).`);
+            return
+        }
+
+        if ( newDescription.length === 0) {
+            console.log(`❌ Error: newDescription must not be empty.`);
+            return
+        }
+
+        // Kiểm tra xem task có tồn tại hay không
+        let taskIndex = taskList.findIndex(task => task.id == taskId);
+        
+        if( taskIndex === -1) {
+            console.log(`❌ Error: Task with id ${taskId} not found.`);
+            return
+        }
+
+        const currentTask = taskList[taskIndex];
+        // Cập nhật trong taskList
+        const description = currentTask.description;
+        currentTask.description = newDescription;
+        // Ghi nội dung vừa cập nhật vào file 
+        fs.writeFileSync(filePath, JSON.stringify(taskList), 'utf-8');
+        // Thông báo đã cập nhật thành công
+        console.log(`# Output: Task updated successfully (Id: ${taskId}, Description: ${description} -> ${newDescription})`);
+
+    }catch(error) {
+        console.log(error)
+    }
+}
+
+
 // - deleteTask
 // - markTask
 // - doneTask
