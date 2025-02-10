@@ -62,11 +62,9 @@ let taskList = [];
         // Kiểm tra json file
         // Nếu chưa có thì tạo json file
         if(!fs.existsSync(filePath)) {
-
             // Kiểm tra xem tasKList có đúng có pháp json hay không?
             // Nếu không thì thông báo lỗi
             // Nếu có thì ghi vào file
-            
             const isJSON = isJSONSerializable(taskList);
             if(!isJSON) {
                 taskList = [];
@@ -99,8 +97,10 @@ let taskList = [];
             updateTask(taskId, newDescriptiion)
         }
 
-
-
+        if(command === 'delete') {
+            const taskId = args[1]
+            deleteTask(taskId)
+        }
     } catch (error) {
         console.log(error);
     }
@@ -176,25 +176,20 @@ function updateTask(taskId, newDescription) {
             console.log(`❌ Error: taskId must be an integer, but received ${taskId} (${typeof taskId}).`);
             return
         }
-
         if (typeof newDescription !== 'string') {
             console.log(`❌ Error: newDescription must be a string, but received ${newDescription} (${typeof newDescription}).`);
             return
         }
-
         if ( newDescription.length === 0) {
             console.log(`❌ Error: newDescription must not be empty.`);
             return
         }
-
         // Kiểm tra xem task có tồn tại hay không
         let taskIndex = taskList.findIndex(task => task.id == taskId);
-        
         if( taskIndex === -1) {
             console.log(`❌ Error: Task with id ${taskId} not found.`);
             return
         }
-
         const currentTask = taskList[taskIndex];
         // Cập nhật trong taskList
         const description = currentTask.description;
@@ -203,7 +198,6 @@ function updateTask(taskId, newDescription) {
         fs.writeFileSync(filePath, JSON.stringify(taskList), 'utf-8');
         // Thông báo đã cập nhật thành công
         console.log(`# Output: Task updated successfully (Id: ${taskId}, Description: ${description} -> ${newDescription})`);
-
     }catch(error) {
         console.log(error)
     }
@@ -211,6 +205,34 @@ function updateTask(taskId, newDescription) {
 
 
 // - deleteTask
+
+function deleteTask(taskId) {
+    // Kiểm tra đầu vào
+    if(!Number.isInteger(Number.parseInt(taskId))){
+        console.log(`❌ Error: taskId must be an integer, but received ${taskId} (${typeof taskId}).`);
+        return
+    }
+    // Kiểm tra xem taskIđ có tồn tại hay không
+    const taskIndex = taskList.findIndex(task => task.id == taskId)
+    if ( taskIndex === -1 )  {
+        console.log(`❌ Error: Task with id ${taskId} not found.`);
+        return
+    }
+    // Xóa task khỏi task list
+    taskList.splice(taskIndex, 1)
+    // Ghi vào file danh sách task mới sau khi xóa task ra khỏi danh sách
+    fs.writeFileSync(filePath, JSON.stringify(taskList), (error) => {
+        console.log(error)
+    })
+    // Kiểm tra xem có task đã xóa khỏi list hay chưa
+    if( taskList.find(task => task.taskId === taskId) ) {
+        console.log("❌ Something when wrong. Detele is not success")
+        return
+    }
+    // Thông báo tới người dùng rằng đã xóa task nào
+    console.log(`# Output: Task deleted successfully (Id: ${taskId})`);
+}
+
 // - markTask
 // - doneTask
 // - listTask
