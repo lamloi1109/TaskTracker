@@ -4,8 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path'
 import {task} from './task.js';
 import * as fs from 'fs';
-import { type } from 'os';
-import { Console } from 'console';
+import { getCurrentTime } from './util.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -101,6 +100,32 @@ let taskList = [];
             const taskId = args[1]
             deleteTask(taskId)
         }
+
+        if(command === 'list') {
+
+            const argument = args[1]
+
+            if(!argument) {
+                listAllTasks()
+                return
+            }
+            
+            if( argument === 'todo' || argument === 'in-progress' || argument === 'done' ) {
+                const status = argument
+                listTasksByStatus(status)
+                return
+            }    
+
+            if( Number.isInteger(Number.parseFloat(argument))  ) {
+                const id = argument
+                listTaskById(id)
+                return
+            }    
+
+            console.log(`Invalid argument!`)
+
+        }
+
     } catch (error) {
         console.log(error);
     }
@@ -166,7 +191,6 @@ function isJSONParsable(json) {
 }
 
 // - updateTask
-
 function updateTask(taskId, newDescription) {
     try{
         // Kiểm tra đầu vào
@@ -194,6 +218,7 @@ function updateTask(taskId, newDescription) {
         // Cập nhật trong taskList
         const description = currentTask.description;
         currentTask.description = newDescription;
+        currentTask.updatedAt = getCurrentTime()
         // Ghi nội dung vừa cập nhật vào file 
         fs.writeFileSync(filePath, JSON.stringify(taskList), 'utf-8');
         // Thông báo đã cập nhật thành công
@@ -236,6 +261,55 @@ function deleteTask(taskId) {
 // - markTask
 // - doneTask
 // - listTask
+
+// list all task
+function listAllTasks() {
+    try {
+
+    } catch(error) {
+        console.log(error)
+    }
+
+    console.table(taskList);
+}
+// list by status
+function listTasksByStatus(status) {
+    try {
+        // Kiểm tra đầu vào
+        if( typeof status !== 'string' ||status.length === 0 ) {
+            console.log(`❌ Error: status must be a string, but received ${status} (${typeof status})`)
+            return
+        }
+
+        if(status !== 'todo' && status !== 'done' && status !== 'in-progress') {
+            console.log('Status is not valid!')
+            return
+        }
+
+        const listByStatus = taskList.filter((task) => task.status === status)
+
+        console.table(listByStatus)
+    } catch(error) {
+        console.log(error)
+    }
+}
+
+// list by id
+function listTaskById(taskId) {
+    try{
+        if( !Number.isInteger(Number.parseInt(taskId))) {
+            console.log(`❌ Error: taskId must be an integer, but received ${taskId} (${typeof taskId}).`);
+            return
+        }
+
+        const task = taskList.find(task => task.id == taskId)
+        console.table(task)
+        
+    } catch(error) {    
+        console.log(error)
+    }
+}
+
 
 // Function File
 // - readFile
