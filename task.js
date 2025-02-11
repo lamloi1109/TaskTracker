@@ -1,3 +1,6 @@
+import { getCurrentTime } from "./util.js";
+
+
 export function task( idTask, desTask, statusTask) {
     let id = idTask ?? 0;
     let description = desTask ?? "";
@@ -53,15 +56,4 @@ export function task( idTask, desTask, statusTask) {
             }
         }
     }
-}
-
-function getCurrentTime() {
-    const timeElapsed = Date.now();
-    const today = new Date(timeElapsed);
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1;
-    const currentDay = today.getDate();
-    const currentHour = today.getHours();
-    const currentMinute = today.getMinutes();
-    return `${currentYear}/${currentMonth}/${currentDay} ${currentHour}:${currentMinute}`;
 }
