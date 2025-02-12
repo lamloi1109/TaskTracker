@@ -13,7 +13,8 @@ let commandList = [
     'add'
     , 'update'
     , 'delete'
-    , 'mark'
+    , 'mark-in-progress',
+    'mark-done',
     , 'done'
     , 'list'
     , 'list-done'
@@ -125,6 +126,26 @@ let taskList = [];
             console.log(`Invalid argument!`)
 
         }
+
+        if(command === 'mark-in-progress') {
+            const taskId = args[1]
+            mark(taskId, 'in-progress')
+            return
+        }
+
+        if(command === 'mark-done') {
+            const taskId = args[1]
+            mark(taskId, 'done')
+            return
+        }
+
+        if(command === 'mark-todo') {
+            const taskId = args[1]
+            mark(taskId, 'todo')
+            return
+        }
+        
+
 
     } catch (error) {
         console.log(error);
@@ -306,6 +327,40 @@ function listTaskById(taskId) {
         console.table(task)
         
     } catch(error) {    
+        console.log(error)
+    }
+}
+
+// Mark
+function mark(taskId, status) {
+    try{
+        // Kiểm tra đầu vào
+        if( !Number.isInteger(Number.parseInt(taskId)) ){
+            console.log(`❌ Error: taskId must be an integer, but received ${taskId} (${typeof taskId}).`);
+        }
+        // Kiểm tra xem id có tồn tại hay không
+        const isExistedTaskId = taskList.some(task => task.id == taskId)
+        if(!isExistedTaskId) {
+            console.log('❌ Error: task is not found!')
+        }
+        // Chuyển trạng của status
+        const currentTask = taskList.find(task => task.id == taskId )
+
+        if (currentTask.status === status) {
+            console.log(`${status} here`)
+            console.table(currentTask)
+            return
+        }
+
+        currentTask.status = status
+        currentTask.updatedAt = getCurrentTime()
+        // Cập nhật lại vào file json
+        fs.writeFileSync(filePath, JSON.stringify(taskList), 'utf-8')
+
+        // Thông báo
+        console.log(`#Output: Mark ${status} task successfully!`)
+        console.table(currentTask)
+    } catch(error) {
         console.log(error)
     }
 }
