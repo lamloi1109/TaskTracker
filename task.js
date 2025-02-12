@@ -1,8 +1,11 @@
-function task( idTask, desTask, statusTask) {
+import { getCurrentTime } from "./util.js";
+
+
+export function task( idTask, desTask, statusTask) {
     let id = idTask ?? 0;
     let description = desTask ?? "";
     let status = statusTask ?? "todo";
-    let createdAt =  Date.now().toString("yyyy/MM/dd");
+    let createdAt = getCurrentTime();
     let updatedAt = "";
     return {
         getId: function(){
@@ -43,7 +46,14 @@ function task( idTask, desTask, statusTask) {
         setUpdatedAt: function(value) {
             updatedAt = value;
         },
+        getInstance: function() {
+            return {
+                id: id,
+                description: description,
+                status: status,
+                createdAt: createdAt,
+                updatedAt: updatedAt
+            }
+        }
     }
 }
-
-export default task;
