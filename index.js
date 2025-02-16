@@ -39,7 +39,6 @@ let taskList = [];
     try {
             
         const args = process.argv.slice(2);
-        console.log(args);
         // Nếu như không có tham số thì thông báo lỗi
         if( args.length === 0) {
             console.log('Please input command');
